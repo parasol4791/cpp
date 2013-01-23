@@ -5,15 +5,21 @@
 
 // A convenience method hiding initial indices.
 template<typename T>
-void sortMerge(std::vector<T>& vec)
+void sortMerge(
+    std::vector<T>& vec,
+    size_t          threshold = 4
+    )
 {
-    sortMerge(vec, 0, vec.size()-1);
+    sortMerge(vec, threshold, 0, vec.size()-1);
 }
 
 // Sorting using a recursive merge algorithm.
+// Internally uses a sortInsertion algorithm for small (sub)arrays
+// below a threshold size.
 template<typename T>
 void sortMerge(
     std::vector<T>& vec,
+    size_t          threshold,
     size_t          idx1,
     size_t          idx3
     )
@@ -23,15 +29,15 @@ void sortMerge(
     if (size == 1)
         return;
     // Use insertion sort for small arrays
-//    else if (size < 4)
-//        return sortInsertion(vec);
+    else if (size < threshold)
+        return sortInsertion(vec, true, idx1, idx3);
     // Otherwise, use a merge sort algorithm.
     else
     {
         size_t idx2 = idx1 + (size_t)std::floor((size-1)/2.0);
 
-        sortMerge(vec, idx1, idx2);
-        sortMerge(vec, idx2+1, idx3);
+        sortMerge(vec, threshold, idx1, idx2);
+        sortMerge(vec, threshold, idx2+1, idx3);
         merge(vec, idx1, idx2, idx3);
     }
 }
@@ -91,26 +97,38 @@ void merge(
     }
 }
 
+// A convenience method hiding vector indices.
+template<typename T>
+void sortInsertion(
+    std::vector<T>&     vec,
+    bool                ascending = true
+    )
+{
+    sortInsertion(vec, ascending, 0, vec.size()-1);
+}
 
 // Sorting an array with an insertion sort:
 // each element "bubbles down" (or "bubbled up" in the case
 // of a descending sorting) until it gets to its place.
+// Can sort only a part of an array in the range [idx1, idx2].
 template<typename T>
 void sortInsertion(
-    std::vector<T>& vec,
-    bool ascending = true
+    std::vector<T>&     vec,
+    bool                ascending,
+    int                 idx1,
+    int                 idx2
     )
 {
     if (ascending)
     // An ascending order. Elements "bubble down"
     // towards the beginning of a vector.
     {
-        for (size_t i=1; i<vec.size(); i++)
+        for (int i=idx1 + 1; i<=idx2; i++)
         {
             T temp = vec[i];
             int j = i-1;
 
-            while (j >= 0 && vec[j] > temp)
+            while (j >= idx1 && vec[j] > temp)
             {
                 vec[j+1] = vec[j];
                 j--;
@@ -122,13 +140,12 @@ void sortInsertion(
     // A descending order. Elements "bubble up"
     // towards the end of a vector.
     {
-        int vSize = (int)vec.size();
-        for (int i=vSize-2; i>=0; i--)
+        for (int i=idx2-1; i>=idx1; i--)
         {
             T temp = vec[i];
             int j = i+1;
 
-            while (j < vSize && vec[j] > temp)
+            while (j < idx2+1 && vec[j] > temp)
             {
                 vec[j-1] = vec[j];
                 j++;
@@ -136,6 +153,64 @@ void sortInsertion(
             vec[j-1] = temp;
         }
     }
+}
+
+// A convenience method hiding vector indices.
+template<typename T>
+void sortInsertionRecursive(
+    std::vector<T>&     vec,
+    bool                ascending = true
+    )
+{
+    int idx2 = ascending ? 1 : vec.size()-2;
+    sortInsertionRecursive(vec, ascending, 0, idx2, vec.size()-1);
+}
+
+template<typename T>
+void sortInsertionRecursive(
+    std::vector<T>&     vec,
+    bool                ascending,
+    int                 idx1,
+    int                 idx2,
+    int                 idx3
+    )
+{
+    if (ascending)
+    {
+        // An ascending order. Elements "bubble down"
+        // towards the beginning of a vector.
+        T temp = vec[idx2];
+        int j = idx2-1;
+
+        while (j >= idx1 && vec[j] > temp)
+        {
+            vec[j+1] = vec[j];
+            j--;
+        }
+        vec[j+1] = temp;
+
+        if (++idx2 > idx3)
+            return;
+    }
+    else
+    {
+        // A descending order. Elements "bubble up"
+        // towards the end of a vector.
+        T temp = vec[idx2];
+        int j = idx2+1;
+
+        while (j < idx3+1 && vec[j] > temp)
+        {
+            vec[j-1] = vec[j];
+            j++;
+        }
+        vec[j-1] = temp;
+
+        if (--idx2 < idx1)
+            return;
+    }
+
+    sortInsertionRecursive(vec, ascending, idx1, idx2, idx3);
 }
 
 

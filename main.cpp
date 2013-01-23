@@ -12,7 +12,7 @@ int main()
 {
 	cout << "Hello!" << endl;
 
-/*	vector<int> vInt = makeVectorInt(8, 20, 3);
+	vector<int> vInt = makeVectorInt(16, 20, 3);
 	outputVector(cout, vInt);
 
     int idx = linearSearch(38, vInt);
@@ -20,14 +20,17 @@ int main()
     int idx1 = linearSearch(23, vInt);
     cout << "Index for 23 is " << idx1 << std::endl;
 
-    sortInsertion(vInt, false); // descending order
-    outputVector(cout, vInt);    */
+    sortInsertionRecursive(vInt, false); // descending order
+    outputVector(cout, vInt);
+
+    sortInsertionRecursive(vInt, true, 0, 1, 7);
+    outputVector(cout, vInt);
 
 	vector<int> vIntUniform = makeVectorIntUniform(11, 5, 25);
     outputVector(cout, vIntUniform);
 
 //    sortInsertion(vIntUniform);
-    sortMerge(vIntUniform);
+    sortMerge(vIntUniform, 1);
     outputVector(cout, vIntUniform);
 
 
