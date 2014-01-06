@@ -1,16 +1,31 @@
-#include <iostream>
-#include <iomanip>
-
 #include "utils/vector.h"
+#include "utils/NumLimits.h"
+#include "utils/codec.h"
 #include "algo/sort.h"
 #include "algo/search.h"
+
+#include <iostream>
+#include <iomanip>
+#include <bitset>
 
 using namespace std;
 
 
+
 int main()
 {
-	cout << "Hello!" << endl;
+	const size_t bSize = numeric_limits<unsigned int>::digits;
+	for (size_t i=8; i<16; i++)
+	{
+		unsigned int iGray = GrayCodes::convertToGray(i);
+		unsigned int iInt = GrayCodes::decodeFromGray(iGray);
+		
+
+		cout << i << "  " << bitset<bSize>(i) << "  to  "
+			 << bitset<bSize>(iGray) << "  " << iGray << "  back to  " << iInt << endl;
+	}
+
+	NumLimits::reportLimitsAll(std::cout);
 
 	vector<int> vInt = makeVectorInt(16, 20, 3);
 	outputVector(cout, vInt);

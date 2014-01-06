@@ -68,10 +68,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\utils\codec.h" />
+    <ClInclude Include="..\..\utils\NumLimits.h" />
     <ClInclude Include="..\..\utils\vector.h" />
     <ClInclude Include="..\..\utils\utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\utils\codec.cpp" />
+    <ClCompile Include="..\..\utils\NumLimits.cpp" />
     <ClCompile Include="..\..\utils\vector.cpp" />
     <ClCompile Include="..\..\utils\utils.cpp" />
   </ItemGroup>
